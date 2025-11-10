@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SSH_CRED    = 'node-app-key'              // Jenkins SSH credential ID
-        SERVER_IP   = '13.127.145.229'            // Update to your actual EC2 IP
+        SERVER_IP   = '15.207.108.225'            // Update to your actual EC2 IP
         REMOTE_USER = 'ubuntu'
         WEB_ROOT    = '/var/www/html'
         APP_NAME    = 'FarmToExport'

@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     environment {
-        SSH_CRED    = 'node-cred'              // Jenkins SSH credential ID
-        SERVER_IP   = '13.53.70.69'            // Update to your actual EC2 IP
+        SSH_CRED    = 'node-app-key'              // Jenkins SSH credential ID
+        SERVER_IP   = '13.233.134.21'            // Update to your actual EC2 IP
         REMOTE_USER = 'ubuntu'
         WEB_ROOT    = '/var/www/html'
         APP_NAME    = 'FarmToExport'
-        REPO_URL    = 'https://github.com/Shivamgarud8/FarmToExport.git'
+        REPO_URL    = 'https://github.com/vaibhavbhuse42/Angular-Farm-ToExport.git'
     }
 
     stages {

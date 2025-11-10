@@ -1,0 +1,14 @@
+<div ng-controller="cartController">
+    <h2>Your Cart</h2>
+
+    <div ng-if="cart.length === 0">
+        <p>Cart is empty</p>
+    </div>
+
+    <div ng-repeat="item in cart">
+        <p>{{item.name}} - ₹{{item.price}}</p>
+        <button ng-click="removeItem($index)">Remove</button>
+    </div>
+
+    <button ng-click="placeOrder()" ng-if="cart.length > 0">Place Order</button>
+</div>

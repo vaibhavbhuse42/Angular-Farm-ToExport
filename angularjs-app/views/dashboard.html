@@ -1,0 +1,22 @@
+<div ng-controller="dashboardController">
+<h2>Dashboard</h2>
+<p>Welcome, {{user.name}} ({{user.role}})</p>
+
+<h3>Your Orders</h3>
+<table>
+<tr><th>Order ID</th><th>Total</th><th>Date</th></tr>
+<tr ng-repeat="o in orders">
+<td>{{o.id}}</td><td>₹{{o.total}}</td><td>{{o.created_at}}</td>
+</tr>
+</table>
+
+<h3>Your Cart</h3>
+<div ng-controller="cartController">
+    <div class="product-card" ng-repeat="p in cart">
+        <p>{{p.name}} | Qty: {{p.quantity}} | ₹{{p.price*p.quantity}}</p>
+        <button ng-click="removeItem($index)">Remove</button>
+    </div>
+    <p>Total: ₹{{total()}}</p>
+    <button ng-click="placeOrder()">Place Order</button>
+</div>
+</div>

@@ -1,0 +1,107 @@
+pipeline {
+    agent any
+
+    environment {
+        SSH_CRED    = 'node-cred'              // Jenkins SSH credential ID
+        SERVER_IP   = '13.53.70.69'            // Update to your actual EC2 IP
+        REMOTE_USER = 'ubuntu'
+        WEB_ROOT    = '/var/www/html'
+        APP_NAME    = 'FarmToExport'
+        REPO_URL    = 'https://github.com/Shivamgarud8/FarmToExport.git'
+    }
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                echo '📦 Cloning FarmToExport repository...'
+                git url: "${REPO_URL}", branch: 'main'
+            }
+        }
+
+        stage('Transfer Files to Server') {
+            steps {
+                echo '🚀 Copying project files to remote server...'
+                sshagent(credentials: ["${SSH_CRED}"]) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} "
+                            sudo mkdir -p ${WEB_ROOT}/${APP_NAME} &&
+                            sudo chown -R ${REMOTE_USER}:${REMOTE_USER} ${WEB_ROOT}/${APP_NAME}
+                        "
+
+                        scp -o StrictHostKeyChecking=no -r * ${REMOTE_USER}@${SERVER_IP}:${WEB_ROOT}/${APP_NAME}/
+                    '''
+                }
+            }
+        }
+
+        stage('Setup Apache Environment') {
+            steps {
+                echo '⚙️ Setting up Apache...'
+                sshagent(credentials: ["${SSH_CRED}"]) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} "
+                            sudo apt update -y &&
+                            sudo apt install -y apache2 git &&
+                            sudo systemctl enable apache2 &&
+                            sudo systemctl start apache2 &&
+
+                            sudo chmod -R 755 ${WEB_ROOT}/${APP_NAME} &&
+                            sudo chown -R www-data:www-data ${WEB_ROOT}/${APP_NAME}
+                        "
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy AngularJS App') {
+            steps {
+                echo '🌐 Deploying AngularJS app to Apache web root...'
+                sshagent(credentials: ["${SSH_CRED}"]) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} "
+                            # Move to correct folder and restart Apache
+                            if [ -d ${WEB_ROOT}/${APP_NAME} ]; then
+                                echo '✅ Files found, proceeding...'
+                            else
+                                echo '❌ No app files found in ${WEB_ROOT}/${APP_NAME}'
+                                exit 1
+                            fi
+
+                            sudo systemctl restart apache2
+                        "
+                    '''
+                }
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                echo '🔍 Verifying deployment...'
+                sshagent(credentials: ["${SSH_CRED}"]) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${SERVER_IP} "
+                            if sudo systemctl status apache2 | grep active; then
+                                echo '✅ Apache running fine!'
+                            else
+                                echo '❌ Apache not running!'
+                            fi
+                        "
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '🎉 FarmToExport deployed successfully!'
+            echo '🌍 Your app is live at:'
+            echo '👉 http://13.53.70.69/FarmToExport/angularjs-app/#!/'
+        }
+
+        failure {
+            echo '❌ Deployment failed! Please check Jenkins logs or permissions on server.'
+        }
+    }
+}

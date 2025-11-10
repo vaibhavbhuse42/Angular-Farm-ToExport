@@ -1,0 +1,14 @@
+<div ng-controller="productController">
+<h2>Products</h2>
+<input type="text" ng-model="searchText" placeholder="Search...">
+<input type="number" ng-model="minPrice" placeholder="Min Price">
+<input type="number" ng-model="maxPrice" placeholder="Max Price">
+<button ng-click="filterProducts()">Filter</button>
+
+<div class="product-card" ng-repeat="p in filteredProducts">
+<img ng-src="images/{{p.image}}" width="150">
+<h4>{{p.name}}</h4>
+<p>Price: ₹{{p.price}}</p>
+<a href="#!/product/{{p.id}}">View Details</a>
+</div>
+</div>

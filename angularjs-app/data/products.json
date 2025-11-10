@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "name": "Red Onion",
+        "price": 50,
+        "description": "Fresh red onion",
+        "stock": 100,
+        "image": "red_onion.jpg"
+    },
+    {
+        "id": 2,
+        "name": "White Onion",
+        "price": 55,
+        "description": "White onion for export",
+        "stock": 80,
+        "image": "white_onion.jpg"
+    },
+    {
+        "id": 3,
+        "name": "Onion Powder",
+        "price": 200,
+        "description": "Powdered onion",
+        "stock": 50,
+        "image": "onion_powder.jpg"
+    }
+]

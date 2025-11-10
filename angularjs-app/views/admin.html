@@ -1,0 +1,25 @@
+<div ng-controller="adminController">
+<h2>Admin Panel</h2>
+
+<h3>Add Product</h3>
+<form ng-submit="addProduct()">
+<input type="text" ng-model="newProduct.name" placeholder="Product Name" required>
+<input type="number" ng-model="newProduct.price" placeholder="Price" required>
+<input type="number" ng-model="newProduct.stock" placeholder="Stock" required>
+<input type="file" file-model="newProduct.image">
+<textarea ng-model="newProduct.description" placeholder="Description"></textarea>
+<button type="submit">Add Product</button>
+</form>
+
+<h3>All Products</h3>
+<table>
+<tr><th>Name</th><th>Price</th><th>Stock</th></tr>
+<tr ng-repeat="p in products">
+<td>{{p.name}}</td><td>{{p.price}}</td><td>{{p.stock}}</td>
+</tr>
+</table>
+
+<h3>Analytics</h3>
+<canvas id="salesChart" width="400" height="200"></canvas>
+<button ng-click="loadAnalytics()">Load Chart</button>
+</div>
